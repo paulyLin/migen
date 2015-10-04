@@ -9,16 +9,17 @@
     %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-function(v1,v2,method="Kernel-Smooth",h,level=3L,k=3,...)
+cmi(v1,v2,method="Kernel-Smooth",h,level=3L,k=3,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{cts}{ The data matrix. Each row is an observation and each column is a
-      variable of interest. Should be numerical data.
+  \item{v1}{ The first continuous variable. Should be a vector.}
+  \item{v2}{The second continuous variable. Should be a vector.}
+  \item{method}{ The method used to calculate mutual informion. Either "Kernel-Smooth" (default) or "k-Neighbor".
 %%     ~~Describe \code{cts} here~~
 }
-  \item{level}{ The number of levels used for plug-in bandwidth estimation (see
-      the documentation for the KernSmooth package.)
+  \item{level}{ The number of levels used for plug-in bandwidth estimation in the Kernel-Smooth method (see
+      the documentation for the KernSmooth package).
 %%     ~~Describe \code{level} here~~
 }
   \item{na.rm}{ Remove missing values if TRUE. This is required for the
@@ -30,34 +31,21 @@ function(v1,v2,method="Kernel-Smooth",h,level=3L,k=3,...)
       KernSmooth package.
 %%     ~~Describe \code{h} here~~
 }
+  \item{k}{The number of neighbors used in the k-Neighbor method.}
   \item{\dots}{ Additional options passed to dpik() if necessary.
 %%     ~~Describe \code{\dots} here~~
 } 
-    \item{v1}{ A vector for the pairwise version}
-    \item{v2}{ A vector for the pairwise version}
 }
-\details{ The results of cmi() are in many ways similar to a correlation matrix,
-    with each row and column index corresponding to a given variable.
-    cminjk() and cminjk.pw() just returns the MI values without performing the
-    jackknife. cmi.pw() and cminjk.pw() each only require two bandwidths, one
-    for each variable. The number of processor cores used can be changed by
-    setting the environment variable "OMP_NUM_THREADS" \emph{before} starting R.
+\details{ It calculates mutual information between two continuous variables using either the Kernel-Smooth method (default) or k-Neighbor method. 
 %%  ~~ If necessary, more details than the description above ~~
 }
-\value{ Returns a list of 3 matrices each of size ncol(cts) by
-    ncol(cts)
-    \item{mi}{ The raw MI estimates.}
-    \item{bcmi}{Jackknife bias corrected MI estimates (BCMI). These are each MI value
-    minus the corresponding jackknife estimate of bias.}
-    \item{zvalues}{Z-scores for each hypothesis that the corresponding 
-    BCMI value is zero. These have poor statistical properties but can be useful
-    as a rough measure of the strength of association.}
+\value{ Returns the mutual information.}
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
-}
+
 %% \references{
 %% %% ~put references to the literature/web site here ~
 %% }

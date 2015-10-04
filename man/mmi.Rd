@@ -5,7 +5,7 @@
 \title{ Calculate mixed-pair mutual information between a continuous variable and a discrete variable.
 %%  ~~function to do ... ~~
 }
-\description{This function calculates MI between a continuous variable
+\description{This function calculates mutual information between a continuous variable
     and a discrete variable.
     %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
@@ -19,14 +19,17 @@ mmi(cts, disc, method="Kernel-Smooth",
   \item{cts}{ Continuous variable. Should be a vector.
 %%     ~~Describe \code{cts} here~~
 }
-    \item{disc}{ Discrete variable. Should be a vector.)}
+    \item{disc}{ Discrete variable. Should be a vector.}
+
 %%
-  \item{level}{ The number of levels used for plug-in bandwidth estimation (see
+  \item{method}{ The method used to calculate mutual information. Either "Kernel-Smooth" (default) or "k-Neighbor".
+}
+
+%%
+  \item{level}{ The number of levels used for plug-in bandwidth estimation in the Kernel-Smooth method (see
       the documentation for the KernSmooth package.)
 }
-%%
-  \item{method}{ The method used to calculate mutual information. Either "Kernel-Smooth" or "k-Neighbor".
-}
+
 %%     ~~Describe \code{level} here~~
   \item{na.rm}{ Remove missing values if TRUE. This is required for the
       bandwidth calculation.
@@ -37,20 +40,18 @@ mmi(cts, disc, method="Kernel-Smooth",
       KernSmooth package.
 %%     ~~Describe \code{h} here~~
 }
+ \item{ki}{A vector of length n, where n is the number of categories 
+ in the discrete variable. Each entry of ki is the number of neighbors 
+ used in the k-Neighbor method.}
   \item{\dots}{ Additional options passed to dpik() if necessary.
 %%     ~~Describe \code{\dots} here~~
 } 
 }
-\details{mminjk() and mminjk.pw() return just the MI values without performing the
-    jackknife. mmi.pw() and mminjk.pw() only require one bandwidth for the
-    continuous variable. The number of processor cores used can be changed by
-    setting the environment variable "OMP_NUM_THREADS" \emph{before} starting R.
+\details{It calculates mutual information between a 
+continuous variable and a discrete variable using either the Kernel-Smooth method (default) or k-Neighbor method.
 %%  ~~ If necessary, more details than the description above ~~
 }
-\value{ Returns a list of 3 matrices each of size ncol(cts) by
-    ncol(disc). Each row index represents a continuous variable and each column
-    index a discrete variable. 
-    \item{mi}{The raw MI estimates.}
+\value{ Returns the mutual information.
    
 
 %%  ~Describe the value returned
@@ -75,10 +76,6 @@ mmi(cts, disc, method="Kernel-Smooth",
 %% %% ~~objects to See Also as \code{\link{help}}, ~~~
 %% }
 \examples{
-
-##################################################
-# A dataset with discrete and continuous variables
-
 cts <- c(rnorm(50,-5,1), rnorm(50,0,1), rnorm(50,5,1))
 disc <- c(rep("A",50), rep("B",50), rep("C",50))
 
