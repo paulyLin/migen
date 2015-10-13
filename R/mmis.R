@@ -67,7 +67,7 @@ function(cts, disc, level = 3L, na.rm = FALSE, h, ...)
     return(result[c("mi", "bcmi", "zvalues")])
 }
 
-mmis.pw <- function(cts, disc, h, bc, ...)
+mmis.pw <- function(cts, disc, h, bc=TRUE, ...)
 {
     if (length(cts) != length(disc)) stop("Input vectors must be the same length")
 
