@@ -2,19 +2,10 @@ Package: migen
 Type: Package
 Title: Mixed-pair mutual information estimators
 Version: 0.1
-Date: 2015-30-09
-Author: Chris Pardy, Paul Lin
+Date: 2015-24-11
+Authors: Paul Lin, Chris Pardy
 Maintainer: Chris Pardy <cooliomcdude@gmail.com>
-Description: Uses a kernel smoothing approach to calculate Mutual Information
-    for comparisons between all types of variables including continuous vs
-    continuous, continuous vs discrete and discrete vs discrete. Uses a
-    nonparametric bias correction giving Bias Corrected Mutual Information
-    (BCMI). Implemented efficiently in Fortran 95 with OpenMP and suited to
-    large genomic datasets.  
+Description: Calculates mutual information through k nearest neighbour algorithm or kernel smoothing algorithm. 
 License: GPL-3
-URL: http://r-forge.r-project.org/projects/mpmi/
-Depends: KernSmooth
-Packaged: 2014-09-22 03:35:34 UTC; cp
-NeedsCompilation: yes
-Repository: CRAN
-Date/Publication: 2014-09-22 07:59:19
+URL: https://github.com/paulyLin/migen
+Depends: mpmi, moments
