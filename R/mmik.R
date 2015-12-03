@@ -10,8 +10,9 @@ mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRU
   }
   disc<-factor(disc)
   
-  disc <-disc[order(cts)]
-  cts <-sort(cts)
+  sortOrder <- order(cts)
+  disc <-disc[sortOrder]
+  cts <-cts[sortOrder]
   
   cts <- cts-min(cts)+0.5
 
