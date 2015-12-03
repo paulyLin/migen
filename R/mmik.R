@@ -19,7 +19,7 @@ mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRU
 # The fllowing function uses codes from   
 #  http://rstudio-pubs-static.s3.amazonaws.com/1563_1ae2544c0e324b9bb7f6e63cf8f9e098.html
 
-  if(skewnessCorrection){
+  if(skewnessCorrection & abs(skewness(cts)) > 0.5){
     skew.score <- function(c, x) (skewness(log(x + c)))^2
     best.c <- optimise(skew.score, c(0, 20), x = cts)$minimum
     cts <- log(cts + best.c)
