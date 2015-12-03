@@ -27,15 +27,12 @@ mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRU
   
   m <- length(levels(disc))
   Ni <- table(disc)
-
-  disclevels <- list()
-  for (i in 1:m){
-    disclevels[[i]] <- which(disc==levels(disc)[i])
-  }
   
+  ctslevels <- split(cts, disc)
+
   if(bw[1]==0){
     for(i in 1:m){
-      bw[i]<-sd(cts[disclevels[[i]]])
+      bw[i]<-sd(ctslevels[[i]])
     }
   }
   
@@ -45,7 +42,7 @@ mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRU
   
   kk <- 1
   for (i in 1:m){
-    wl <- cts[disclevels[[i]]]
+    wl <- ctslevels[[i]]
     for (j in 1:length(wl)){
       point <- wl[j]
       disciPoints <- wl[which(abs(wl-point) < bw[i])]
