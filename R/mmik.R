@@ -41,17 +41,21 @@ mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRU
   k<-rep(NaN,N)
   ka<-rep(NaN,N)
   d<-rep(NaN,N)
-  for(i in 1:N){
-    wl <- which(disc[i]==levels(disc))
-    disci<- disclevels[[wl]]
-    index <- which(cts[disci]==cts[i])
-    disciPoints <- cts[disci][which(abs(cts[disci]-cts[i]) < bw[wl])]
-    k[i] <- max(length(disciPoints) - 1, 1)
-    d[i]<- max(abs(cts[i] - disciPoints))
-    if(d[i]==0 | is.nan(d[i])){
-      d[i]<-max(abs(cts[disci][c(index-1,index+1)]-cts[i]), na.rm = TRUE)
+  
+  kk <- 1
+  for (i in 1:m){
+    wl <- cts[disclevels[[i]]]
+    for (j in 1:length(wl)){
+      point <- wl[j]
+      disciPoints <- wl[which(abs(wl-point) < bw[i])]
+      k[kk] <- max(length(disciPoints) - 1, 1)
+      d[kk]<- max(abs(point - disciPoints))
+      if(d[kk]==0 | is.nan(d[kk])){
+        d[kk]<-max(abs(wl[c(j-1,j+1)]-point), na.rm = TRUE)
+      }
+      ka[kk]<-sum(abs(cts-point)<d[i])
+      kk <- kk + 1
     }
-    ka[i]<-sum(abs(cts-cts[i])<d[i])
   }
 
   P3<-mean(digamma(k)-digamma(ka))
