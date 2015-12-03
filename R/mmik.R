@@ -1,7 +1,7 @@
 
 ## bandwidth version - varying bandwidth
 
-mpmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRUE){
+mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRUE){
   
   N <- length(disc)
   

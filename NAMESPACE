@@ -1,4 +1,4 @@
 
-export(mpmik, cmik, mpmis, cmis)
+export(mmik, cmik, mmis, cmis)
 
 import(mpmi, moments)

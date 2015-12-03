@@ -22,9 +22,9 @@ Paul Lin, Chris Pardy
   Y<-c(rep("A",w[1]), rep("B",w[2]), rep("C",w[3]))
 
 ## Using k neighbor algorithm
-  mpmik(X,Y)
+  mmik(X,Y)
 ## Using kernel smoothing
-  mpmis(X,Y)
+  mmis(X,Y)
   
 ## US state data  
   x<-state.x77[,1]
