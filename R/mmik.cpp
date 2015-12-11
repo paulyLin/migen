@@ -44,14 +44,19 @@ NumericVector mmikCpp(List ctsLevels, NumericVector bws,
 
             if (d[kk] == 0 | NumericVector::is_na(d[kk]))
             {
-                if (j == 0) d[kk] = std::abs(y[j] - y[j + 1]);
-                else if (j == y.size() - 1) d[kk] = std::abs(y[j] - y[j - 1]); 
+                if (j == 0) 
+                {
+                    d[kk] = std::abs(y[j] - y[j + 1]);
+                }
+                else if (j == y.size() - 1) 
+                {
+                    d[kk] = std::abs(y[j] - y[j - 1]); 
+                }
                 else
                 {
                     d[kk] = std::max(std::abs(y[j] - y[j + 1]), 
-                            std::abs(y[j] - y[j - 1]));
+                                std::abs(y[j] - y[j - 1]));
                 }
-
             }
 
             // Count points in all groups closer than d[kk]

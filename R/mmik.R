@@ -73,7 +73,7 @@ mmikc <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TR
   N <- length(disc)
   
   if (N !=length(cts)){
-    stop("disc and cts must have the same lengths")
+    stop("disc and cts must have the same length")
   }
   disc<-factor(disc)
   
@@ -97,11 +97,5 @@ mmikc <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TR
   
   ctslevels <- split(cts, disc)
 
-#  if(bw[1]==0){
-#    for(i in 1:m){
-#      bw[i]<-sd(ctslevels[[i]])
-#    }
-#  }
-  
   return(mmikCpp(ctslevels, bw, N, cts, Ni))
 }
