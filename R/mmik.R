@@ -103,5 +103,5 @@ mmikc <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TR
     }
   }
   
-  return(mmikCpp(ctslevels, bw, N, cts, Ni)$MI)
+  return(mmikCpp(ctslevels, bw, N, cts, Ni))
 }

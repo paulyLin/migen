@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List mmikCpp(List ctsLevels, NumericVector bws, 
+NumericVector mmikCpp(List ctsLevels, NumericVector bws, 
         NumericVector N, NumericVector cts, NumericVector Ni) 
 {
 
@@ -71,7 +71,5 @@ List mmikCpp(List ctsLevels, NumericVector bws,
         + sum(Ni * (-digamma(Ni))) / N
         + digamma(N);
 
-    //outvec[0] = sum(bws);
-    return List::create(Named("k") = k, Named("d") = d, 
-            Named("ka") = ka, Named("MI") = MI);
+    return MI;
 }	 
