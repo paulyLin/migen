@@ -9,6 +9,7 @@ NumericVector mmikCpp(List ctsLevels, NumericVector bws,
     int levels = ctsLevels.size();
     int n = N[0];
 
+ 
     // Accumulators
     IntegerVector k(n); //make first two integers?
     IntegerVector ka(n);
@@ -19,6 +20,8 @@ NumericVector mmikCpp(List ctsLevels, NumericVector bws,
     {
         SEXP ll = ctsLevels[i];
         NumericVector y(ll);
+
+        if (bws[i] == 0) bws[i] = sd(y);
 
         for (int j = 0; j < y.size(); j++)
         {

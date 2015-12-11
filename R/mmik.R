@@ -97,11 +97,11 @@ mmikc <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TR
   
   ctslevels <- split(cts, disc)
 
-  if(bw[1]==0){
-    for(i in 1:m){
-      bw[i]<-sd(ctslevels[[i]])
-    }
-  }
+#  if(bw[1]==0){
+#    for(i in 1:m){
+#      bw[i]<-sd(ctslevels[[i]])
+#    }
+#  }
   
   return(mmikCpp(ctslevels, bw, N, cts, Ni))
 }
