@@ -51,7 +51,7 @@ mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRU
       if(d[kk]==0 | is.nan(d[kk])){
         d[kk]<-max(abs(wl[c(j-1,j+1)]-point), na.rm = TRUE)
       }
-      ka[kk]<-sum(abs(cts-point)<d[i])
+      ka[kk]<-sum(abs(cts-point)<d[kk]) # Is this d[i] a mistake?!?!?!?
       kk <- kk + 1
     }
   }
@@ -64,3 +64,6 @@ mmik <-function(cts, disc, bw=rep(0,length(unique(disc))),skewnessCorrection=TRU
   
   return(MI)
 }
+
+library(Rcpp)
+sourceCpp("mmik.cpp")
