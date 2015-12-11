@@ -11,7 +11,7 @@ NumericVector mmikCpp(List ctsLevels, NumericVector bws,
 
  
     // Accumulators
-    IntegerVector k(n); //make first two integers?
+    IntegerVector k(n);
     IntegerVector ka(n);
     NumericVector d(n);
 
