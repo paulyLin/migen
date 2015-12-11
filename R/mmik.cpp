@@ -27,35 +27,38 @@ List mmikCpp(List ctsLevels, NumericVector bws,
 		{
 			for (int l = 0; l < y.size(); l++)
 			{
-				if (abs(y[l] - y[j]) < bws[i])
+				if (std::abs(y[l] - y[j]) < bws[i])
 				{
 					k[kk] += 1; // Number of points within BW
 
 					// Max distance to point within BW
-					if (d[kk] < abs(y[l] - y[j]))
+					if (d[kk] < std::abs(y[l] - y[j]))
 					{
-						d[kk] = abs(y[l] - y[j]);
+						d[kk] = std::abs(y[l] - y[j]);
 					}
 				}
 
-				k[kk] = std::max(k[kk] - 1.0, 1.0);
-				// This is why I should make the vectors integer
 			}
+
+			k[kk] = std::max(k[kk] - 1.0, 1.0);
+			// This is why I should make the vectors integer
 
 			// Some redundancy here
 			for (int l = 0; l < cts.size(); l++)
 			{
-				if (abs(cts[l] - y[j]) < d[kk])
+				if (std::abs(cts[l] - y[j]) < d[kk])
 				{
 					ka[kk] += 1;
 				}
 			}
+		
+			
+			kk += 1;
 		}
 
 
-		kk += 1;
 	}
 
 	//outvec[0] = sum(bws);
-	return List::create(Named("k") = k, Named("d") = d, Named("ka") = ka);
+	return List::create(Named("outvec") = outvec, Named("k") = k, Named("d") = d, Named("ka") = ka);
 }	 
