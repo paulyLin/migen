@@ -42,7 +42,7 @@ NumericVector mmikCpp(List ctsLevels, NumericVector bws,
 
             k[kk] = std::max(k[kk] - 1, 1);
 
-            if (d[kk] == 0 | NumericVector::is_na(d[kk]))
+            if (d[kk] == 0 || NumericVector::is_na(d[kk]))
             {
                 if (j == 0) 
                 {
