@@ -41,7 +41,6 @@ NumericVector mmikCpp(List ctsLevels, NumericVector bws,
             }
 
             k[kk] = std::max(k[kk] - 1, 1);
-            // This is why I should make the vectors integer
 
             if (d[kk] == 0 | NumericVector::is_na(d[kk]))
             {
