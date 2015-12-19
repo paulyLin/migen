@@ -53,7 +53,18 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
         # For each point, k is the number of points closer
         # to it (using the max norm) that are closer than
         # the distance to the closest point outside the bandwidth.
-        k[i] <- min(sum(d < d[sN[i]]), sum(d < d[tN[i]]), kmax)
+
+        xeD <- d[sN[i]]
+        yeD <- d[tN[i]]
+        
+        kDist <- c(sum(d < xeD), sum(d < yeD)) # , kmax) # Need to handle kmax
+        which_k <- which.min(kDist)
+        k[i] <- kDist[which_k]
+        eD[i] <- min(xeD, yeD)
+
+
+
+        # k[i] <- min(sum(d < d[sN[i]]), sum(d < d[tN[i]]), kmax)
 
         # In C++, can skip straight from X to Y to next step as soon
         # as we count neighbours > kmax.
@@ -63,9 +74,10 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
         # Alternatively we may not need further calculation to 
         # get eD.
 
-        kN[i] <- order(d)[k[i] + 1]
-        eD[i] <- sort(d)[k[i] + 1] # This will be either d[sN[i]] or d[tN[i]]
-        pM[i] <- which.max(M[kN[i], ])
+        # kN[i] <- order(d)[k[i] + 1]
+        # eD[i] <- sort(d)[k[i] + 1] 
+        # if k!=kmax then eD[i] will be either d[sN[i]] or d[tN[i]]
+        # pM[i] <- which.max(M[kN[i], ])
         l[i] <- sum(xdiffs[, i] < eD[i])
         m[i] <- sum(ydiffs[, i] < eD[i])
     }
