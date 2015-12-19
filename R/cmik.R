@@ -70,7 +70,7 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
 
         # k[i] <- min(sum(d < d[sN[i]]), sum(d < d[tN[i]]), kmax)
 
-        # In C++, can skip straight from X to Y to next step as soon
+        # In C++, can skip straight from X and Y to next step as soon
         # as we count neighbours > kmax.
        
         # Maybe we don't need s, sN, t and tN.
