@@ -34,6 +34,12 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
         # dXi <- abs(X-X[i]) # == xdiffs[, i]
         # dYi <- abs(Y-Y[i])
 
+        # N.B., if we order the distances at the beginning then
+        # all the counting becomes much faster because we can break
+        # the loop as soon as we exceed the distance (i.e., bw or eD).
+        #
+        # Can maybe include kmax in the loop used to find sN and tN.
+
         # Count number within bandwidth
         s[i] <- sum(xdiffs[, i] < bw[1])
         # Get index of s[i]th neighbour
@@ -61,8 +67,6 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
         which_k <- which.min(kDist)
         k[i] <- kDist[which_k]
         eD[i] <- min(xeD, yeD)
-
-
 
         # k[i] <- min(sum(d < d[sN[i]]), sum(d < d[tN[i]]), kmax)
 
