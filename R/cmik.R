@@ -138,6 +138,82 @@ cmik2 <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
     return(MI)
 }
 
+
+cmik_works <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
+
+    dX <- duplicated(X)
+    dY <- duplicated(Y)
+    X[dX]<-X[dX]+rnorm(length(X[dX]),0,0.001)
+    Y[dY]<-Y[dY]+rnorm(length(Y[dY]),0,0.001)  
+
+    X<-as.vector(scale(X))
+    Y<-as.vector(scale(Y))
+
+    N<-length(X)
+
+    k<- rep(NaN,N)
+    kN <- rep(NaN,N)
+    eD <- rep(NaN,N)
+    pM <- rep(NaN,N)
+    s <- rep(NaN,N)
+    sN<-rep(NaN,N)
+    t <- rep(NaN,N)
+    tN<-rep(NaN,N)
+    l <- rep(NaN,N)
+    m <- rep(NaN,N)
+
+    # Matrices of differences from each point
+    # (Doesn't help speed)
+    xdiffs <- abs(outer(X, X, "-"))
+    ydiffs <- abs(outer(Y, Y, "-"))
+    # These matrices are symmetrical (due to abs()), which can be used
+    # to speed up the C++ code (as in mpmi Fortran code).
+
+    for (i in 1:N){
+        # dXi <- abs(X-X[i]) # == xdiffs[, i]
+        # dYi <- abs(Y-Y[i])
+
+        # Count number within bandwidth
+        s[i] <- sum(xdiffs[, i] < bw[1])
+        # Get index of s[i]th neighbour
+        # (Can be outside bandwidth!)
+        # I.e., this is index of closest point
+        # outside bandwidth.
+        sN[i] <- order(xdiffs[, i])[s[i] + 1]
+
+        # Same as for X
+        t[i] <- sum(ydiffs[, i] < bw[2])
+        tN[i] <- order(ydiffs[, i])[t[i] + 1]
+
+        M <- cbind(xdiffs[, i], ydiffs[, i])
+        # Max norm distance to every other point (X,Y pair)
+        d <- apply(M, 1, max)
+        
+        # For each point, k is the number of points closer
+        # to it (using the max norm) that are closer than
+        # the distance to the closest point outside the bandwidth.
+        k[i] <- min(sum(d < d[sN[i]]), sum(d < d[tN[i]]), kmax)
+
+        # In C++, can skip straight from X to Y to next step as soon
+        # as we count neighbours > kmax.
+       
+        # Maybe we don't need s, sN, t and tN.
+
+        # Alternatively we may not need further calculation to 
+        # get eD.
+
+        kN[i] <- order(d)[k[i] + 1]
+        eD[i] <- sort(d)[k[i] + 1] # This will be either d[sN[i]] or d[tN[i]]
+        pM[i] <- which.max(M[kN[i], ])
+        l[i] <- sum(xdiffs[, i] < eD[i])
+        m[i] <- sum(ydiffs[, i] < eD[i])
+    }
+
+    MI <- digamma(N) + mean(digamma(k)) - mean(digamma(l) + digamma(m))
+
+    return(MI)
+}
+
 # Timing
 x <- rnorm(1000)
 y <- rnorm(1000)
