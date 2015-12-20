@@ -92,6 +92,8 @@ cmik2 <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X))))
         # I.e., this is index of closest point
         # outside bandwidth.
         sN[i] <- order(xdiffs[, i])[s[i] + 1]
+        # Can also use partial sorting here in R,
+        # for C++ probably best to just sort before finding s[i]
 
         # Same as for X
         t[i] <- sum(ydiffs[, i] < bw[2])
@@ -117,7 +119,12 @@ cmik2 <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X))))
         if (kmax < k1 && kmax < k2)
         {
             k[i] <- kmax
-            eD[i] <- sort(d)[k[i] + 1] 
+            eD[i] <- sort(d, partial = 1:(k[i] + 1))[k[i] + 1] 
+            # Can use C++ std::partial_sort
+            # Maybe there is sugar
+            # (R's sorting is probably crap, but that needs to be
+            # balanced against any overhead that might exist when 
+            # applying a C++ std function to an R vector. Need to test.)
         } else
         {
             which_k <- which.min(c(k1, k2))
@@ -142,7 +149,7 @@ cmik2 <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X))))
         l[i] <- sum(xdiffs[, i] < eD[i])
         m[i] <- sum(ydiffs[, i] < eD[i])
         # This can be faster if these are sorted
-        # probably a shortcut here too.
+        # probably a shortcut here too (maybe not)
     }
 
     MI <- digamma(N) + mean(digamma(k)) - mean(digamma(l) + digamma(m))
