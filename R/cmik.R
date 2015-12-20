@@ -44,23 +44,35 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
 }
 
 
-cmik2 <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X))))
+cmik2 <-function(X, 
+                 Y,
+                 bw = c(0.8, 0.8),
+                 kmax = floor(sqrt(length(X))),
+                 tiebreak = TRUE,
+                 scale.data = TRUE)
 {
 
-    dX <- duplicated(X)
-    dY <- duplicated(Y)
-    X[dX]<-X[dX]+rnorm(length(X[dX]),0,0.001)
-    Y[dY]<-Y[dY]+rnorm(length(Y[dY]),0,0.001)  
+    if (tiebreak)
+    {
 
-    X<-as.vector(scale(X))
-    Y<-as.vector(scale(Y))
+        dX <- duplicated(X)
+        dY <- duplicated(Y)
+        X[dX] <- X[dX] + rnorm(length(X[dX]), 0, 0.001)
+        Y[dY] <- Y[dY] + rnorm(length(Y[dY]), 0, 0.001)  
+    }
+
+    if (scale.data)
+    {
+        X<-as.vector(scale(X))
+        Y<-as.vector(scale(Y))
+    }
 
     N<-length(X)
 
     k<- rep(NaN,N)
-    kN <- rep(NaN,N)
+    # kN <- rep(NaN,N)
     eD <- rep(NaN,N)
-    pM <- rep(NaN,N)
+    # pM <- rep(NaN,N)
     s <- rep(NaN,N)
     sN<-rep(NaN,N)
     t <- rep(NaN,N)
@@ -75,7 +87,13 @@ cmik2 <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X))))
     # These matrices are symmetrical (due to abs()), which can be used
     # to speed up the C++ code (as in mpmi Fortran code).
 
-    for (i in 1:N){
+    # We could do a similar thing with the max norm distances.
+    # Could be a big improvement due to symmetry.
+    distmat <- pmax(xdiffs, ydiffs)
+    # This gives a huge speed up in R.
+
+    for (i in 1:N)
+    {
         # dXi <- abs(X-X[i]) # == xdiffs[, i]
         # dYi <- abs(Y-Y[i])
 
@@ -92,16 +110,16 @@ cmik2 <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X))))
         # I.e., this is index of closest point
         # outside bandwidth.
         sN[i] <- order(xdiffs[, i])[s[i] + 1]
-        # Can also use partial sorting here in R,
         # for C++ probably best to just sort before finding s[i]
 
         # Same as for X
         t[i] <- sum(ydiffs[, i] < bw[2])
         tN[i] <- order(ydiffs[, i])[t[i] + 1]
 
-        M <- cbind(xdiffs[, i], ydiffs[, i])
+        # M <- cbind(xdiffs[, i], ydiffs[, i])
         # Max norm distance to every other point (X,Y pair)
-        d <- apply(M, 1, max)
+        # d <- apply(M, 1, max)
+        d <- distmat[, i]
         
         # For each point, k is the number of points closer
         # to it (using the max norm) that are closer than
