@@ -44,6 +44,8 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
 }
 
 
+# Need to decide best sorting approach, including the possibility
+# of partial sorting or just selecting nth largest element.
 cmik2 <-function(X, 
                  Y,
                  bw = c(0.8, 0.8),
@@ -112,6 +114,8 @@ cmik2 <-function(X,
         sN[i] <- order(xdiffs[, i])[s[i] + 1]
         # for C++ probably best to just sort before finding s[i]
 
+        # C++ can use nth_element !!!! This could be very fast.
+
         # Same as for X
         t[i] <- sum(ydiffs[, i] < bw[2])
         tN[i] <- order(ydiffs[, i])[t[i] + 1]
@@ -139,6 +143,7 @@ cmik2 <-function(X,
             k[i] <- kmax
             eD[i] <- sort(d, partial = 1:(k[i] + 1))[k[i] + 1] 
             # Can use C++ std::partial_sort
+            # EVEN BETTER: use std::nth_element
             # Maybe there is sugar
             # (R's sorting is probably crap, but that needs to be
             # balanced against any overhead that might exist when 
