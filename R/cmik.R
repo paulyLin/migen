@@ -225,15 +225,20 @@ cmikc <-function(X,
 
     # xdiffs <- abs(outer(X, X, "-"))
 
-    xdiffs <- cmikCpp(bw, N, X, Y) 
+    cppout <- cmikCpp(bw, N, X, Y) 
+    xdiffs <- cppout$xdiffs
+    ydiffs <- cppout$ydiffs
+    distmat <- cppout$distmat
+        
     
-    ydiffs <- abs(outer(Y, Y, "-"))
+    # ydiffs <- abs(outer(Y, Y, "-"))
+
     # These matrices are symmetrical (due to abs()), which can be used
     # to speed up the C++ code (as in mpmi Fortran code).
 
     # We could do a similar thing with the max norm distances.
     # Could be a big improvement due to symmetry.
-    distmat <- pmax(xdiffs, ydiffs)
+    # distmat <- pmax(xdiffs, ydiffs)
     # This gives a huge speed up in R.
 
     for (i in 1:N)
