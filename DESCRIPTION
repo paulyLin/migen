@@ -9,3 +9,5 @@ Description: Calculates mutual information through k nearest neighbour algorithm
 License: GPL-3
 URL: https://github.com/paulyLin/migen
 Depends: mpmi, moments
+Imports: Rcpp (>= 0.12.1)
+LinkingTo: Rcpp

@@ -293,3 +293,11 @@ mtext(paste("s:", signif(mean(abs(mip5-x3)),digits = 2),
             "k:", signif(mean(abs(mip6-x3)),digits=2)),
       line=3,side=1)
 abline(h=x3,col="RED")
+
+###### Time comparisons
+
+x <- rnorm(900)
+y <- rep(LETTERS[1:3], 300)
+
+system.time(for (i in 1:100) mmik(x, y))
+system.time(for (i in 1:100) mmis(x, y))
