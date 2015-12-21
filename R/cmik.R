@@ -181,6 +181,147 @@ cmik2 <-function(X,
 }
 
 
+library(Rcpp)
+sourceCpp("cmik.cpp")
+
+cmikc <-function(X, 
+                 Y,
+                 bw = c(0.8, 0.8),
+                 kmax = floor(sqrt(length(X))),
+                 tiebreak = TRUE,
+                 scale.data = TRUE)
+{
+
+    if (tiebreak)
+    {
+
+        dX <- duplicated(X)
+        dY <- duplicated(Y)
+        X[dX] <- X[dX] + rnorm(length(X[dX]), 0, 0.001)
+        Y[dY] <- Y[dY] + rnorm(length(Y[dY]), 0, 0.001)  
+    }
+
+    if (scale.data)
+    {
+        X<-as.vector(scale(X))
+        Y<-as.vector(scale(Y))
+    }
+
+    N<-length(X)
+
+    k<- rep(NaN,N)
+    # kN <- rep(NaN,N)
+    eD <- rep(NaN,N)
+    # pM <- rep(NaN,N)
+    s <- rep(NaN,N)
+    sN<-rep(NaN,N)
+    t <- rep(NaN,N)
+    tN<-rep(NaN,N)
+    l <- rep(NaN,N)
+    m <- rep(NaN,N)
+
+    # Matrices of differences from each point
+    # (Doesn't help speed in R)
+
+    # xdiffs <- abs(outer(X, X, "-"))
+
+    xdiffs <- cmikCpp(bw, N, X, Y) 
+    
+    ydiffs <- abs(outer(Y, Y, "-"))
+    # These matrices are symmetrical (due to abs()), which can be used
+    # to speed up the C++ code (as in mpmi Fortran code).
+
+    # We could do a similar thing with the max norm distances.
+    # Could be a big improvement due to symmetry.
+    distmat <- pmax(xdiffs, ydiffs)
+    # This gives a huge speed up in R.
+
+    for (i in 1:N)
+    {
+        # dXi <- abs(X-X[i]) # == xdiffs[, i]
+        # dYi <- abs(Y-Y[i])
+
+        # N.B., if we order the distances at the beginning then
+        # all the counting becomes much faster because we can break
+        # the loop as soon as we exceed the distance (i.e., bw or eD).
+        #
+        # Can maybe include kmax in the loop used to find sN and tN.
+
+        # Count number within bandwidth
+        s[i] <- sum(xdiffs[, i] < bw[1])
+        # Get index of s[i]th neighbour
+        # (Can be outside bandwidth!)
+        # I.e., this is index of closest point
+        # outside bandwidth.
+        sN[i] <- order(xdiffs[, i])[s[i] + 1]
+        # for C++ probably best to just sort before finding s[i]
+
+        # C++ can use nth_element !!!! This could be very fast.
+
+        # Same as for X
+        t[i] <- sum(ydiffs[, i] < bw[2])
+        tN[i] <- order(ydiffs[, i])[t[i] + 1]
+
+        # M <- cbind(xdiffs[, i], ydiffs[, i])
+        # Max norm distance to every other point (X,Y pair)
+        # d <- apply(M, 1, max)
+        d <- distmat[, i]
+        
+        # For each point, k is the number of points closer
+        # to it (using the max norm) that are closer than
+        # the distance to the closest point outside the bandwidth.
+
+        # I.e., k is going to be either kmax, s[i] or t[i]?
+        # (NO)
+
+        xeD <- d[sN[i]]
+        yeD <- d[tN[i]]
+
+        k1 <- sum(d < xeD)
+        k2 <- sum(d < yeD)
+
+        if (kmax < k1 && kmax < k2)
+        {
+            k[i] <- kmax
+            eD[i] <- sort(d, partial = 1:(k[i] + 1))[k[i] + 1] 
+            # Can use C++ std::partial_sort
+            # EVEN BETTER: use std::nth_element
+            # Maybe there is sugar
+            # (R's sorting is probably crap, but that needs to be
+            # balanced against any overhead that might exist when 
+            # applying a C++ std function to an R vector. Need to test.)
+        } else
+        {
+            which_k <- which.min(c(k1, k2))
+            k[i] <- c(k1, k2)[which_k]
+            eD[i] <- c(xeD, yeD)[which_k]
+        }
+
+        # k[i] <- min(sum(d < d[sN[i]]), sum(d < d[tN[i]]), kmax)
+
+        # In C++, can skip straight from X and Y to next step as soon
+        # as we count neighbours > kmax.
+       
+        # Maybe we don't need s, sN, t and tN.
+
+        # Alternatively we may not need further calculation to 
+        # get eD.
+
+        # kN[i] <- order(d)[k[i] + 1]
+        # eD[i] <- sort(d)[k[i] + 1] 
+        # if k!=kmax then eD[i] will be either d[sN[i]] or d[tN[i]]
+        # pM[i] <- which.max(M[kN[i], ])
+        l[i] <- sum(xdiffs[, i] < eD[i])
+        m[i] <- sum(ydiffs[, i] < eD[i])
+        # This can be faster if these are sorted
+        # probably a shortcut here too (maybe not)
+    }
+
+    MI <- digamma(N) + mean(digamma(k)) - mean(digamma(l) + digamma(m))
+
+    return(MI)
+}
+
 # Timing
 x <- rnorm(1000)
 y <- rnorm(1000)
