@@ -72,7 +72,7 @@ List cmikCpp(NumericVector bws,
         // get s(i)
         int sN_index = 0;
         double sN_value = 0;
-        bool sN_candidate_found;
+        bool sN_candidate_found(false);
         for (int j = 0; j < n; j++)
         {
             if (xdi[j] < bws[0])
@@ -85,6 +85,7 @@ List cmikCpp(NumericVector bws,
                 {
                     sN_index = j;
                     sN_value = xdi[j];
+                    sN_candidate_found = true;
                 } 
                 else if (xdi[j] < sN_value)
                 {
