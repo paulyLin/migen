@@ -46,9 +46,42 @@ List cmikCpp(NumericVector bws,
         }
     }
 
+    // Don't need these to be vectors, keep for the moment
+    // to check intermediate results.
+    NumericVector s(n);
+    NumericVector sN(n);
+    for (int i = 0; i < n; i++)
+    {
+        // N.b. C++ std:sort is faster than R
+        //
+        // R matrices are row-major. Need to check
+        // if RCpp NumericMatrix is too.
+        NumericVector xdi = xdiffs(i, _);
+        NumericVector ydi = ydiffs(i, _);
+        NumericVector d = distmat(i, _);
+
+        std::sort(xdi.begin(), xdi.end());
+        std::sort(ydi.begin(), ydi.end());
+        std::sort(d.begin(), d.end());
+
+        for (int j = 0; j < n; j++)
+        {
+            if (xdi[j] < bws[0]) 
+            {
+                s[i] += 1;
+            } 
+            else
+            {
+                break;
+            }
+        }
+
+    }
+
     List ret;
     ret["xdiffs"] = xdiffs;
     ret["ydiffs"] = ydiffs;
     ret["distmat"] = distmat;
+    ret["s"] = s;
     return(ret);
 } 
