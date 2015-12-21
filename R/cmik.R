@@ -259,6 +259,7 @@ cmikc <-function(X,
         # I.e., this is index of closest point
         # outside bandwidth.
         sN[i] <- order(xdiffs[, i])[s[i] + 1]
+        # This is index of (s[i]+1)th smallest xdiff.
         # for C++ probably best to just sort before finding s[i]
 
         # C++ can use nth_element !!!! This could be very fast.

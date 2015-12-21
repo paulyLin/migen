@@ -50,6 +50,9 @@ List cmikCpp(NumericVector bws,
     // to check intermediate results.
     NumericVector s(n);
     NumericVector sN(n);
+    NumericVector t(n);
+    NumericVector tN(n);
+    NumericVector dists(2);
     for (int i = 0; i < n; i++)
     {
         // N.b. C++ std:sort is faster than R
@@ -63,7 +66,8 @@ List cmikCpp(NumericVector bws,
         std::sort(xdi.begin(), xdi.end());
         std::sort(ydi.begin(), ydi.end());
         std::sort(d.begin(), d.end());
-
+ 
+        // get s(i)
         for (int j = 0; j < n; j++)
         {
             if (xdi[j] < bws[0]) 
@@ -75,6 +79,25 @@ List cmikCpp(NumericVector bws,
                 break;
             }
         }
+        sN[i] = xdi[s[i] + 1]; // wrong
+        double xeD = d[s[i] + 1]; // wrong
+        if (i == 0) dists[0] = xeD; //wrong
+
+        // get t(i)
+        for (int j = 0; j < n; j++)
+        {
+            if (ydi[j] < bws[1]) 
+            {
+                t[i] += 1;
+            } 
+            else
+            {
+                break;
+            }
+        }
+        tN[i] = ydi[t[i] + 1]; // wrong
+        double yeD = d[t[i] + 1]; // wrong
+        if (i == 0) dists[1] = yeD; //wrong
 
     }
 
@@ -83,5 +106,9 @@ List cmikCpp(NumericVector bws,
     ret["ydiffs"] = ydiffs;
     ret["distmat"] = distmat;
     ret["s"] = s;
+    ret["t"] = t;
+    ret["sN"] = sN; // values rather than indices.
+    ret["tN"] = tN;
+    ret["dists"] = dists;
     return(ret);
 } 
