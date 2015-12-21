@@ -63,6 +63,8 @@ List cmikCpp(NumericVector bws,
         NumericVector ydi = ydiffs(i, _);
         NumericVector d = distmat(i, _);
 
+        // Sorting breaks connection between X & Y.
+        // May need to fins another approach.
         std::sort(xdi.begin(), xdi.end());
         std::sort(ydi.begin(), ydi.end());
         std::sort(d.begin(), d.end());
