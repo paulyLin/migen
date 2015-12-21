@@ -48,7 +48,7 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
 # of partial sorting or just selecting nth largest element.
 cmik2 <-function(X, 
                  Y,
-                 bw = c(0.8, 0.8),
+                 bw = c(1, 1),
                  kmax = floor(sqrt(length(X))),
                  tiebreak = TRUE,
                  scale.data = TRUE)
@@ -111,14 +111,20 @@ cmik2 <-function(X,
         # (Can be outside bandwidth!)
         # I.e., this is index of closest point
         # outside bandwidth.
-        sN[i] <- order(xdiffs[, i])[s[i] + 1]
+
+        # Stop problems latter:
+        s[i] <- max(2, s[i])
+
+        sN[i] <- order(xdiffs[, i])[s[i]] # Get rid of +1 here
         # for C++ probably best to just sort before finding s[i]
 
         # C++ can use nth_element !!!! This could be very fast.
 
         # Same as for X
         t[i] <- sum(ydiffs[, i] < bw[2])
-        tN[i] <- order(ydiffs[, i])[t[i] + 1]
+        t[i] <- max(2, t[i])
+
+        tN[i] <- order(ydiffs[, i])[t[i]]
 
         # M <- cbind(xdiffs[, i], ydiffs[, i])
         # Max norm distance to every other point (X,Y pair)

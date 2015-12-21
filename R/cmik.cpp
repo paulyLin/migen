@@ -78,6 +78,7 @@ List cmikCpp(NumericVector bws,
             if (xdi[j] < bws[0])
             {  
                 s[i] += 1;
+                // Need some min s[i] == 2 stuff.
             }
             else // Get closest point outside the bandwidth
             {
