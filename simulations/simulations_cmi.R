@@ -1,3 +1,5 @@
+library(MASS)
+
 # bandwidth version ###########
 
 set.seed(11)

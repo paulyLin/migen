@@ -1,6 +1,6 @@
 # bandwidth version ##########
 
-cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
+cmik <-function(X,Y,bw=c(1,1),kmax=floor(sqrt(length(X)))){
   
   dX <- duplicated(X)
   dY <- duplicated(Y)
@@ -25,12 +25,15 @@ cmik <-function(X,Y,bw=c(0.8,0.8),kmax=floor(sqrt(length(X)))){
   
   for (i in 1:N){
     s[i]<-sum(abs(X-X[i])<bw[1])
-    sN[i]<-order(abs(X-X[i]))[s[i]+1]
+    s[i] <- max(s[i], 2)
+    sN[i]<-order(abs(X-X[i]))[s[i]]
     t[i]<-sum(abs(Y-Y[i])<bw[2])
-    tN[i]<-order(abs(Y-Y[i]))[t[i]+1]
+    t[i] <- max(t[i], 2)
+    tN[i]<-order(abs(Y-Y[i]))[t[i]]
     M <- cbind(abs(X-X[i]),abs(Y-Y[i]))
     d <- apply(M,1,max)
     k[i]<-min(sum(d<d[sN[i]]),sum(d<d[tN[i]]),kmax)
+#    k[i]<-max(1,k[i])
     kN[i]<-order(d)[k[i]+1]
     eD[i] <-sort(d)[k[i]+1]
     pM[i] <- which.max(M[kN[i],])
