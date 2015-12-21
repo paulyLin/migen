@@ -65,41 +65,47 @@ List cmikCpp(NumericVector bws,
 
         // Sorting breaks connection between X & Y.
         // May need to fins another approach.
-        std::sort(xdi.begin(), xdi.end());
-        std::sort(ydi.begin(), ydi.end());
-        std::sort(d.begin(), d.end());
+        // std::sort(xdi.begin(), xdi.end());
+        // std::sort(ydi.begin(), ydi.end());
+        // std::sort(d.begin(), d.end());
  
         // get s(i)
+        int sN_index = 0;
+        double sN_value = 0;
+        bool sN_candidate_found;
         for (int j = 0; j < n; j++)
         {
-            if (xdi[j] < bws[0]) 
-            {
+            if (xdi[j] < bws[0])
+            {  
                 s[i] += 1;
-            } 
-            else
+            }
+            else // Get closest point outside the bandwidth
             {
-                break;
+                if (!sN_candidate_found)
+                {
+                    sN_index = j;
+                    sN_value = xdi[j];
+                } 
+                else if (xdi[j] < sN_value)
+                {
+                    sN_index = j;
+                    sN_value = xdi[j];
+                }
             }
         }
-        sN[i] = xdi[s[i] + 1]; // wrong
-        double xeD = d[s[i] + 1]; // wrong
-        if (i == 0) dists[0] = xeD; //wrong
+        sN[i] = sN_index;
+        // sN[i] = xdi[s[i] + 1]; // wrong
+        // double xeD = d[s[i] + 1]; // wrong
+        // if (i == 0) dists[0] = xeD; //wrong
 
         // get t(i)
         for (int j = 0; j < n; j++)
         {
-            if (ydi[j] < bws[1]) 
-            {
-                t[i] += 1;
-            } 
-            else
-            {
-                break;
-            }
+            if (ydi[j] < bws[1]) t[i] += 1; 
         }
-        tN[i] = ydi[t[i] + 1]; // wrong
-        double yeD = d[t[i] + 1]; // wrong
-        if (i == 0) dists[1] = yeD; //wrong
+        // tN[i] = ydi[t[i] + 1]; // wrong
+        // double yeD = d[t[i] + 1]; // wrong
+        // if (i == 0) dists[1] = yeD; //wrong
 
     }
 
