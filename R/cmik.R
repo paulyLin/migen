@@ -190,6 +190,7 @@ cmik2 <-function(X,
     cppout$t
     cppout$sN + 1 # C++ indexes start at 0.
     cppout$tN + 1 # C++ indexes start at 0.
+    cppout$eD
 
 library(Rcpp)
 sourceCpp("cmik.cpp")

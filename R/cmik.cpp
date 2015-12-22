@@ -52,7 +52,8 @@ List cmikCpp(NumericVector bws,
     NumericVector sN(n);
     NumericVector t(n);
     NumericVector tN(n);
-    NumericVector dists(2);
+    NumericVector eD(n);
+    // NumericVector dists(2);
 
     // Finding furthest point within bw.
     int sN_inbw_index = 0;
@@ -69,6 +70,12 @@ List cmikCpp(NumericVector bws,
     int tN_outbw_index = 0;
     double tN_outbw_value = 0.0;
     bool tN_outbw_candidate_found = false;
+
+    double xeD = 0;
+    double yeD = 0;
+
+    int kx = 0;
+    int ky = 0;
 
     for (int i = 0; i < n; i++)
     {
@@ -93,6 +100,10 @@ List cmikCpp(NumericVector bws,
         sN_outbw_index = 0;
         sN_outbw_value = 0;
         sN_outbw_candidate_found = false;
+        xeD = 0; 
+        yeD = 0;
+        kx = 0;
+        ky = 0;
         for (int j = 0; j < n; j++)
         {
             if (xdi[j] < bws[0])
@@ -200,6 +211,34 @@ List cmikCpp(NumericVector bws,
             tN[i] = tN_outbw_index;
         }
 
+        xeD = d(sN[i]);
+        yeD = d(tN[i]);
+
+        // Find kx and ky
+        for (int j = 0; j < n; j++)
+        {
+            if (d[j] < xeD)
+            {
+                kx += 1;
+            }
+
+            if (d[j] < yeD)
+            {
+                ky += 1;
+            }
+        }
+        // Don't implement kmax for now.
+
+        if (kx <= ky)
+        {
+            eD[i] = xeD;
+        }
+        else
+        {
+            eD[i] = yeD;
+        }
+
+
     }
 
     List ret;
@@ -210,6 +249,8 @@ List cmikCpp(NumericVector bws,
     ret["t"] = t;
     ret["sN"] = sN; // values rather than indices.
     ret["tN"] = tN;
-    ret["dists"] = dists;
+    ret["xeD"] = xeD;
+    ret["yeD"] = yeD;
+    ret["eD"] = eD;
     return(ret);
 } 
