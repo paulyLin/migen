@@ -53,9 +53,23 @@ List cmikCpp(NumericVector bws,
     NumericVector t(n);
     NumericVector tN(n);
     NumericVector dists(2);
-    int sN_index = 0;
-    double sN_value = 0.0;
-    bool sN_candidate_found = false;
+
+    // Finding furthest point within bw.
+    int sN_inbw_index = 0;
+    double sN_inbw_value = 0.0;
+    bool sN_inbw_candidate_found = false;
+    int tN_inbw_index = 0;
+    double tN_inbw_value = 0.0;
+    bool tN_inbw_candidate_found = false;
+
+    // Finding closest point outside bw.
+    int sN_outbw_index = 0;
+    double sN_outbw_value = 0.0;
+    bool sN_outbw_candidate_found = false;
+    int tN_outbw_index = 0;
+    double tN_outbw_value = 0.0;
+    bool tN_outbw_candidate_found = false;
+
     for (int i = 0; i < n; i++)
     {
         // N.b. C++ std:sort is faster than R
@@ -73,65 +87,65 @@ List cmikCpp(NumericVector bws,
         // std::sort(d.begin(), d.end());
  
         // get s(i)
-        sN_index = 0;
-        sN_value = 0;
-        sN_candidate_found = false;
+        sN_inbw_index = 0;
+        sN_inbw_value = 0;
+        sN_inbw_candidate_found = false;
+        sN_outbw_index = 0;
+        sN_outbw_value = 0;
+        sN_outbw_candidate_found = false;
         for (int j = 0; j < n; j++)
         {
             if (xdi[j] < bws[0])
             {  
                 s[i] += 1;
                 
-                if(!sN_candidate_found)
+                // Find furthest point inside bw.
+                if(!sN_inbw_candidate_found)
                 {
-                    sN_index = j;
-                    sN_value = xdi[j];
-                    sN_candidate_found = true;
+                    sN_inbw_index = j;
+                    sN_inbw_value = xdi[j];
+                    sN_inbw_candidate_found = true;
                 }
-                else if (xdi[j] > sN_value)
+                else if (xdi[j] > sN_inbw_value) // N.b. greater than
                 {
-                    sN_index = j;
-                    sN_value = xdi[j];
+                    sN_inbw_index = j;
+                    sN_inbw_value = xdi[j];
                 }
             }
-                // Need some min s[i] == 2 stuff.
-//                if (s[i] > 1)
-//                {
-//                    sN[i] = j;
-//                } 
-//            else // Get closest point outside the bandwidth
-//            {
-//                if (!sN_candidate_found)
-//                {
-//                    sN_index = j;
-//                    sN_value = xdi[j];
-//                    sN_candidate_found = true;
-//                } 
-//                else if (xdi[j] < sN_value)
-//                {
-//                    sN_index = j;
-//                    sN_value = xdi[j];
-//                }
-//            }
+            else
+            {
+                // Find closest point outside bw.
+                // Used in case where s[i] == 1, and
+                // we need to set it to s[i] == 2.
+                if(!sN_outbw_candidate_found)
+                {
+                    sN_outbw_index = j;
+                    sN_outbw_value = xdi[j];
+                    sN_outbw_candidate_found = true;
+                }
+                else if (xdi[j] < sN_outbw_value) // N.b. less than
+                {
+                    sN_outbw_index = j;
+                    sN_outbw_value = xdi[j];
+                }
+            }
+         }
+        if (s[i] > 1)
+        {
+            sN[i] = sN_inbw_index;
+        } 
+        else
+        {
+            s[i] = 2;
+            sN[i] = sN_outbw_index;
         }
-        sN[i] = sN_index;
-//        if (s[i] < 2)
-//        {
-//            s[i] = 2;
-//            sN[i] = sN_index;
-//        }   
-        // sN[i] = xdi[s[i] + 1]; // wrong
-        // double xeD = d[s[i] + 1]; // wrong
-        // if (i == 0) dists[0] = xeD; //wrong
 
         // get t(i)
         for (int j = 0; j < n; j++)
         {
             if (ydi[j] < bws[1]) t[i] += 1; 
         }
-        // tN[i] = ydi[t[i] + 1]; // wrong
-        // double yeD = d[t[i] + 1]; // wrong
-        // if (i == 0) dists[1] = yeD; //wrong
+
 
     }
 
