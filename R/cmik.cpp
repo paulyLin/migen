@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List cmikCpp(NumericVector bws, 
+NumericVector cmikCpp(NumericVector bws, 
         NumericVector N, NumericVector X, NumericVector Y, NumericVector kmax) 
 {
     int n = N[0];
@@ -50,12 +50,21 @@ List cmikCpp(NumericVector bws,
 
     // Don't need all these to be vectors, keep for the moment
     // to check intermediate results.
-    NumericVector s(n);
-    NumericVector sN(n);
-    NumericVector t(n);
-    NumericVector tN(n);
-    NumericVector eD(n); // maybe remove
-    NumericVector k(n);  // need k, l and m.
+    //
+    // NumericVector s(n);
+    // NumericVector sN(n);
+    // NumericVector t(n);
+    // NumericVector tN(n);
+    // NumericVector eD(n); 
+
+    int s;
+    int sN;
+    int t;
+    int tN;
+    double eD; 
+
+    // need k, l and m.
+    NumericVector k(n); 
     NumericVector l(n);
     NumericVector m(n);
 
@@ -114,7 +123,7 @@ List cmikCpp(NumericVector bws,
         {
             if (xdi[j] < bws[0])
             {  
-                s[i] += 1;
+                s += 1;
                 
                 // Find furthest point inside bw.
                 if(!sN_inbw_candidate_found)
@@ -132,8 +141,8 @@ List cmikCpp(NumericVector bws,
             else
             {
                 // Find closest point outside bw.
-                // Used in case where s[i] == 1, and
-                // we need to set it to s[i] == 2.
+                // Used in case where s == 1, and
+                // we need to set it to s == 2.
                 if(!sN_outbw_candidate_found)
                 {
                     sN_outbw_index = j;
@@ -147,20 +156,20 @@ List cmikCpp(NumericVector bws,
                 }
             }
          }
-        if (s[i] > 1)
+        if (s > 1)
         {
-            sN[i] = sN_inbw_index;
+            sN = sN_inbw_index;
         } 
         else
         {
-            s[i] = 2;
-            sN[i] = sN_outbw_index;
+            s = 2;
+            sN = sN_outbw_index;
         }
 
         // get t(i)
 //        for (int j = 0; j < n; j++)
 //        {
-//            if (ydi[j] < bws[1]) t[i] += 1; 
+//            if (ydi[j] < bws[1]) t += 1; 
 //        }
 
         // get t(i) snd tN(i)
@@ -174,7 +183,7 @@ List cmikCpp(NumericVector bws,
         {
             if (ydi[j] < bws[1])
             {  
-                t[i] += 1;
+                t += 1;
                 
                 // Find furthest point inside bw.
                 if(!tN_inbw_candidate_found)
@@ -192,8 +201,8 @@ List cmikCpp(NumericVector bws,
             else
             {
                 // Find closest point outside bw.
-                // Used in case where s[i] == 1, and
-                // we need to set it to s[i] == 2.
+                // Used in case where s == 1, and
+                // we need to set it to s == 2.
                 if(!tN_outbw_candidate_found)
                 {
                     tN_outbw_index = j;
@@ -207,18 +216,18 @@ List cmikCpp(NumericVector bws,
                 }
             }
          }
-        if (t[i] > 1)
+        if (t > 1)
         {
-            tN[i] = tN_inbw_index;
+            tN = tN_inbw_index;
         } 
         else
         {
-            t[i] = 2;
-            tN[i] = tN_outbw_index;
+            t = 2;
+            tN = tN_outbw_index;
         }
 
-        xeD = d(sN[i]);
-        yeD = d(tN[i]);
+        xeD = d(sN);
+        yeD = d(tN);
 
         // Find kx and ky
         for (int j = 0; j < n; j++)
@@ -240,31 +249,31 @@ List cmikCpp(NumericVector bws,
             k[i] = km;
             std::nth_element(d.begin(), d.begin() + km, d.end());
             // Gets (km + 1)th smallest distance (C++ index from 0, R from 1).
-            eD[i] = d[km];
+            eD = d[km];
         }
         else
         {
             if (kx <= ky)
             {
                 k[i] = kx;
-                eD[i] = xeD;
+                eD = xeD;
             }
             else
             {
                 k[i] = ky;
-                eD[i] = yeD;
+                eD = yeD;
             }
         }
 
         // Get l and m
         for (int j = 0; j < n; j++)
         {
-            if (xdi[j] < eD[i])
+            if (xdi[j] < eD)
             {
                 l[i] += 1;
             }
 
-            if (ydi[j] < eD[i])
+            if (ydi[j] < eD)
             {
                 m[i] += 1;
             }
@@ -275,20 +284,20 @@ List cmikCpp(NumericVector bws,
 
     MI = digamma(N) + mean(digamma(k)) - mean(digamma(l) + digamma(m));
 
-    List ret;
-    ret["xdiffs"] = xdiffs;
-    ret["ydiffs"] = ydiffs;
-    ret["distmat"] = distmat;
-    ret["s"] = s;
-    ret["t"] = t;
-    ret["sN"] = sN; // values rather than indices.
-    ret["tN"] = tN;
-    //ret["xeD"] = xeD;
-    //ret["yeD"] = yeD;
-    ret["k"] = k;
-    ret["l"] = l;
-    ret["m"] = m;
-    ret["eD"] = eD;
-    ret["MI"] = MI;
-    return(ret);
+//    List ret;
+//    ret["xdiffs"] = xdiffs;
+//    ret["ydiffs"] = ydiffs;
+//    ret["distmat"] = distmat;
+//    ret["s"] = s;
+//    ret["t"] = t;
+//    ret["sN"] = sN; // values rather than indices.
+//    ret["tN"] = tN;
+//    //ret["xeD"] = xeD;
+//    //ret["yeD"] = yeD;
+//    ret["k"] = k;
+//    ret["l"] = l;
+//    ret["m"] = m;
+//    ret["eD"] = eD;
+//    ret["MI"] = MI;
+    return(MI);
 } 
