@@ -174,7 +174,7 @@ NumericVector cmikCpp(NumericVector bws,
                     tN_inbw_value = ydi[j];
                     tN_inbw_candidate_found = true;
                 }
-                else if (ydi[j] > tN_inbw_value) // N.b. greater thanR 
+                else if (ydi[j] > tN_inbw_value) // N.b. greater than 
                 {
                     tN_inbw_index = j;
                     tN_inbw_value = ydi[j];
@@ -232,7 +232,7 @@ NumericVector cmikCpp(NumericVector bws,
         {
             k[i] = km;
             std::nth_element(d.begin(), d.begin() + km, d.end());
-            // Gets (km + 1)th smallest distance (C++ index from 0, R from 1).
+            // Gets (km + 1)th smallest distance (C++ indexes from 0, R from 1).
             eD = d[km];
         }
         else
