@@ -214,7 +214,20 @@ cmikc <-function(X,
 
     N<-length(X)
 
-    return(cmikCpp(bw, N, X, Y, kmax)$MI)
+    return(cmikCpp(bw, N, X, Y, kmax))
+}
+
+# Simple check
+checks <- matrix(NaN, nrow = 1000, ncol = 2)
+for (i in 1:1000)
+{
+    if (i %% 50 == 0) print(i)
+
+    x <- rnorm(100)
+    y <- rnorm(100)
+
+    checks[i, 1] <- cmik2(x, y)
+    checks[i, 2] <- cmikc(x, y)
 }
 
 # Timing

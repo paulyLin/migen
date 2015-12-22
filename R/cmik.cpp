@@ -57,11 +57,11 @@ NumericVector cmikCpp(NumericVector bws,
     // NumericVector tN(n);
     // NumericVector eD(n); 
 
-    int s;
-    int sN;
-    int t;
-    int tN;
-    double eD; 
+    int s = 0;
+    int sN = 0;
+    int t = 0;
+    int tN = 0;
+    double eD = 0; 
 
     // need k, l and m.
     NumericVector k(n); 
@@ -94,6 +94,12 @@ NumericVector cmikCpp(NumericVector bws,
 
     for (int i = 0; i < n; i++)
     {
+        s = 0;
+        sN = 0;
+        t = 0;
+        tN = 0;
+        eD = 0; 
+
         // N.b. C++ std:sort is faster than R
         //
         // R matrices are row-major. Need to check
