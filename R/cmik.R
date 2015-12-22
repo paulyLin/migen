@@ -236,7 +236,7 @@ cmikc <-function(X,
 
     # xdiffs <- abs(outer(X, X, "-"))
 
-    cppout <- cmikCpp(bw, N, X, Y) 
+    cppout <- cmikCpp(bw, N, X, Y, kmax) 
     cppout$s
     cppout$t
     cppout$sN + 1 # C++ indexes start at 0.

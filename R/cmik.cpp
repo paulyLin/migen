@@ -3,9 +3,11 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 List cmikCpp(NumericVector bws, 
-        NumericVector N, NumericVector X, NumericVector Y) 
+        NumericVector N, NumericVector X, NumericVector Y, NumericVector kmax) 
 {
     int n = N[0];
+    int km = kmax[0];
+
 
     // X differences
     NumericMatrix xdiffs(n);
@@ -52,7 +54,9 @@ List cmikCpp(NumericVector bws,
     NumericVector sN(n);
     NumericVector t(n);
     NumericVector tN(n);
-    NumericVector eD(n);
+    NumericVector eD(n); // maybe remove
+    NumericVector k(n); // maybe remove
+
     // NumericVector dists(2);
 
     // Finding furthest point within bw.
@@ -229,17 +233,28 @@ List cmikCpp(NumericVector bws,
         }
         // Don't implement kmax for now.
 
-        if (kx <= ky)
+        if (km < kx && km < ky)
         {
-            eD[i] = xeD;
+            k[i] = km;
+            std::nth_element(d.begin(), d.begin() + km, d.end());
+            // Gets (km + 1)th smallest distance (C++ index from 0, R from 1).
+            eD[i] = d[km];
         }
         else
         {
-            eD[i] = yeD;
+            if (kx <= ky)
+            {
+                k[i] = kx;
+                eD[i] = xeD;
+            }
+            else
+            {
+                k[i] = ky;
+                eD[i] = yeD;
+            }
         }
 
-
-    }
+    } // Main loop
 
     List ret;
     ret["xdiffs"] = xdiffs;
@@ -249,8 +264,9 @@ List cmikCpp(NumericVector bws,
     ret["t"] = t;
     ret["sN"] = sN; // values rather than indices.
     ret["tN"] = tN;
-    ret["xeD"] = xeD;
-    ret["yeD"] = yeD;
+    //ret["xeD"] = xeD;
+    //ret["yeD"] = yeD;
+    ret["k"] = k;
     ret["eD"] = eD;
     return(ret);
 } 
