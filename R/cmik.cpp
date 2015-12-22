@@ -86,7 +86,7 @@ List cmikCpp(NumericVector bws,
         // std::sort(ydi.begin(), ydi.end());
         // std::sort(d.begin(), d.end());
  
-        // get s(i)
+        // get s(i) and sN(i)
         sN_inbw_index = 0;
         sN_inbw_value = 0;
         sN_inbw_candidate_found = false;
@@ -141,11 +141,64 @@ List cmikCpp(NumericVector bws,
         }
 
         // get t(i)
+//        for (int j = 0; j < n; j++)
+//        {
+//            if (ydi[j] < bws[1]) t[i] += 1; 
+//        }
+
+        // get t(i) snd tN(i)
+        tN_inbw_index = 0;
+        tN_inbw_value = 0;
+        tN_inbw_candidate_found = false;
+        tN_outbw_index = 0;
+        tN_outbw_value = 0;
+        tN_outbw_candidate_found = false;
         for (int j = 0; j < n; j++)
         {
-            if (ydi[j] < bws[1]) t[i] += 1; 
+            if (ydi[j] < bws[1])
+            {  
+                t[i] += 1;
+                
+                // Find furthest point inside bw.
+                if(!tN_inbw_candidate_found)
+                {
+                    tN_inbw_index = j;
+                    tN_inbw_value = ydi[j];
+                    tN_inbw_candidate_found = true;
+                }
+                else if (ydi[j] > tN_inbw_value) // N.b. greater than
+                {
+                    tN_inbw_index = j;
+                    tN_inbw_value = ydi[j];
+                }
+            }
+            else
+            {
+                // Find closest point outside bw.
+                // Used in case where s[i] == 1, and
+                // we need to set it to s[i] == 2.
+                if(!tN_outbw_candidate_found)
+                {
+                    tN_outbw_index = j;
+                    tN_outbw_value = ydi[j];
+                    tN_outbw_candidate_found = true;
+                }
+                else if (ydi[j] < tN_outbw_value) // N.b. less than
+                {
+                    tN_outbw_index = j;
+                    tN_outbw_value = ydi[j];
+                }
+            }
+         }
+        if (t[i] > 1)
+        {
+            tN[i] = tN_inbw_index;
+        } 
+        else
+        {
+            t[i] = 2;
+            tN[i] = tN_outbw_index;
         }
-
 
     }
 
