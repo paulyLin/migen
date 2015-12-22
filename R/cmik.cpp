@@ -53,6 +53,9 @@ List cmikCpp(NumericVector bws,
     NumericVector t(n);
     NumericVector tN(n);
     NumericVector dists(2);
+    int sN_index = 0;
+    double sN_value = 0.0;
+    bool sN_candidate_found = false;
     for (int i = 0; i < n; i++)
     {
         // N.b. C++ std:sort is faster than R
@@ -70,15 +73,19 @@ List cmikCpp(NumericVector bws,
         // std::sort(d.begin(), d.end());
  
         // get s(i)
-        int sN_index = 0;
-        double sN_value = 0;
-        bool sN_candidate_found(false);
+        sN_index = 0;
+        sN_value = 0;
+        sN_candidate_found = false;
         for (int j = 0; j < n; j++)
         {
             if (xdi[j] < bws[0])
             {  
                 s[i] += 1;
                 // Need some min s[i] == 2 stuff.
+                if (s[i] > 1)
+                {
+                    sN[i] = j;
+                } 
             }
             else // Get closest point outside the bandwidth
             {
@@ -95,7 +102,11 @@ List cmikCpp(NumericVector bws,
                 }
             }
         }
-        sN[i] = sN_index;
+        if (s[i] < 2)
+        {
+            s[i] = 2;
+            sN[i] = sN_index;
+        }   
         // sN[i] = xdi[s[i] + 1]; // wrong
         // double xeD = d[s[i] + 1]; // wrong
         // if (i == 0) dists[0] = xeD; //wrong
