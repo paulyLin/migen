@@ -81,32 +81,45 @@ List cmikCpp(NumericVector bws,
             if (xdi[j] < bws[0])
             {  
                 s[i] += 1;
-                // Need some min s[i] == 2 stuff.
-                if (s[i] > 1)
-                {
-                    sN[i] = j;
-                } 
-            }
-            else // Get closest point outside the bandwidth
-            {
-                if (!sN_candidate_found)
+                
+                if(!sN_candidate_found)
                 {
                     sN_index = j;
                     sN_value = xdi[j];
                     sN_candidate_found = true;
-                } 
-                else if (xdi[j] < sN_value)
+                }
+                else if (xdi[j] > sN_value)
                 {
                     sN_index = j;
                     sN_value = xdi[j];
                 }
             }
+                // Need some min s[i] == 2 stuff.
+//                if (s[i] > 1)
+//                {
+//                    sN[i] = j;
+//                } 
+//            else // Get closest point outside the bandwidth
+//            {
+//                if (!sN_candidate_found)
+//                {
+//                    sN_index = j;
+//                    sN_value = xdi[j];
+//                    sN_candidate_found = true;
+//                } 
+//                else if (xdi[j] < sN_value)
+//                {
+//                    sN_index = j;
+//                    sN_value = xdi[j];
+//                }
+//            }
         }
-        if (s[i] < 2)
-        {
-            s[i] = 2;
-            sN[i] = sN_index;
-        }   
+        sN[i] = sN_index;
+//        if (s[i] < 2)
+//        {
+//            s[i] = 2;
+//            sN[i] = sN_index;
+//        }   
         // sN[i] = xdi[s[i] + 1]; // wrong
         // double xeD = d[s[i] + 1]; // wrong
         // if (i == 0) dists[0] = xeD; //wrong
