@@ -48,14 +48,16 @@ List cmikCpp(NumericVector bws,
         }
     }
 
-    // Don't need these to be vectors, keep for the moment
+    // Don't need all these to be vectors, keep for the moment
     // to check intermediate results.
     NumericVector s(n);
     NumericVector sN(n);
     NumericVector t(n);
     NumericVector tN(n);
     NumericVector eD(n); // maybe remove
-    NumericVector k(n); // maybe remove
+    NumericVector k(n);  // need k, l and m.
+    NumericVector l(n);
+    NumericVector m(n);
 
     // NumericVector dists(2);
 
@@ -254,7 +256,24 @@ List cmikCpp(NumericVector bws,
             }
         }
 
+        // Get l and m
+        for (int j = 0; j < n; j++)
+        {
+            if (xdi[j] < eD[i])
+            {
+                l[i] += 1;
+            }
+
+            if (ydi[j] < eD[i])
+            {
+                m[i] += 1;
+            }
+        }
     } // Main loop
+
+    NumericVector MI(1);
+
+    MI = digamma(N) + mean(digamma(k)) - mean(digamma(l) + digamma(m));
 
     List ret;
     ret["xdiffs"] = xdiffs;
@@ -267,6 +286,9 @@ List cmikCpp(NumericVector bws,
     //ret["xeD"] = xeD;
     //ret["yeD"] = yeD;
     ret["k"] = k;
+    ret["l"] = l;
+    ret["m"] = m;
     ret["eD"] = eD;
+    ret["MI"] = MI;
     return(ret);
 } 
