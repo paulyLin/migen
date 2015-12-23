@@ -1,16 +1,25 @@
-# bandwidth version ##########
-
-
-# library(Rcpp)
-# sourceCpp("cmik.cpp")
-
-cmikc <-function(X, 
-                 Y,
-                 bw = c(1, 1),
-                 kmax = floor(sqrt(length(X))),
-                 tiebreak = TRUE,
-                 scale.data = TRUE)
+cmik <-function(X, 
+                Y,
+                bw = c(1, 1),
+                kmax = floor(sqrt(length(X))),
+                tiebreak = TRUE,
+                scale.data = TRUE, 
+                na.rm = FALSE)
 {
+    N <- length(X)
+
+    if (N != length(Y))
+    {
+        stop("X and Y must have the same length")
+    }
+
+    if(na.rm)
+    {
+        okX <- !is.na(X)
+        okY <- !is.na(Y)
+        X <- X[okX & okY]
+        Y <- Y[okX & okY]
+    }
 
     if (tiebreak)
     {
@@ -23,11 +32,9 @@ cmikc <-function(X,
 
     if (scale.data)
     {
-        X<-as.vector(scale(X))
-        Y<-as.vector(scale(Y))
+        X <- as.vector(scale(X))
+        Y <- as.vector(scale(Y))
     }
-
-    N<-length(X)
 
     return(cmikCpp(bw, N, X, Y, kmax))
 }

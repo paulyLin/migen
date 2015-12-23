@@ -5,6 +5,21 @@
 
 using namespace Rcpp;
 
+// cmikCpp
+NumericVector cmikCpp(NumericVector bws, NumericVector N, NumericVector X, NumericVector Y, NumericVector kmax);
+RcppExport SEXP migen_cmikCpp(SEXP bwsSEXP, SEXP NSEXP, SEXP XSEXP, SEXP YSEXP, SEXP kmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type bws(bwsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type kmax(kmaxSEXP);
+    __result = Rcpp::wrap(cmikCpp(bws, N, X, Y, kmax));
+    return __result;
+END_RCPP
+}
 // mmikCpp
 NumericVector mmikCpp(List ctsLevels, NumericVector bws, NumericVector N, NumericVector cts, NumericVector Ni);
 RcppExport SEXP migen_mmikCpp(SEXP ctsLevelsSEXP, SEXP bwsSEXP, SEXP NSEXP, SEXP ctsSEXP, SEXP NiSEXP) {
