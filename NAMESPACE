@@ -1,4 +1,4 @@
-
-export(mmik, cmik, mmis, cmis)
-
+useDynLib(migen)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
 import(mpmi, moments)
