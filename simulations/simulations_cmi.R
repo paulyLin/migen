@@ -1,15 +1,13 @@
+library(migen)
 library(MASS)
-
-# bandwidth version ###########
+library(parmigene)
 
 set.seed(11)
-
-library(parmigene)
 
 ## simulation bivariate random normal variables ###########
 
 N <-100
-p<-500
+p<-1000
 
 sC <- rep(NaN,p)
 kP <- rep(NaN,p)
@@ -26,17 +24,17 @@ for (i in 1:p){
   x<-z[,1]
   y<-z[,2]
   sC[i] <- cmis(x,y)
-  kP[i]<-knnmi(x,y)
+  kP[i]<-knnmi(x,y,k=sqrt(N))
   kL[i]<-cmik(x,y)
 }
 
 boxplot(sC,kP,kL,names = c("cmis", "knnmi","cmik"))
 x1<--log(1-rho^2)/2
 abline(h=x1,col="RED")
-mtext(paste("CP:",signif(mean(abs(sC-x1)),digits = 2),
-            "P:",signif(mean(abs(kP-x1)),digits=2),
-            "PL",signif(mean(abs(kL-x1)),digits=2)),
-      line=3,side=1)
+mtext(paste(signif(mean(abs(sC-x1)),digits = 2), "    ",
+            signif(mean(abs(kP-x1)),digits=2), "    ",
+            signif(mean(abs(kL-x1)),digits=2)),
+      line=2,side=1,cex=0.8)
 
 ## moderately correlated ###################################
 
@@ -47,17 +45,17 @@ for (i in 1:p){
   x<-z[,1]
   y<-z[,2]
   sC[i] <- cmis(x,y)
-  kP[i]<-knnmi(x,y)
+  kP[i]<-knnmi(x,y,k=sqrt(N))
   kL[i]<-cmik(x,y)
 }
 
 boxplot(sC,kP,kL,names=c("cmis", "knnmi","cmik"))
 x1<--log(1-rho^2)/2
 abline(h=x1,col="RED")
-mtext(paste("CP:",signif(mean(abs(sC-x1)),digits = 2),
-            "P:",signif(mean(abs(kP-x1)),digits=2),
-            "PL",signif(mean(abs(kL-x1)),digits=2)),
-      line=3,side=1)
+mtext(paste(signif(mean(abs(sC-x1)),digits = 2), "    ",
+            signif(mean(abs(kP-x1)),digits=2), "    ",
+            signif(mean(abs(kL-x1)),digits=2)),
+      line=2,side=1,cex=0.8)
 
 ## highly correlated ############################################
 
@@ -68,17 +66,17 @@ for (i in 1:p){
   x<-z[,1]
   y<-z[,2]
   sC[i] <- cmis(x,y)
-  kP[i]<-knnmi(x,y)
+  kP[i]<-knnmi(x,y,k=sqrt(N))
   kL[i]<-cmik(x,y)
 }
 
 boxplot(sC,kP,kL,names=c("cmis", "knnmi","cmik"))
 x1<--log(1-rho^2)/2
 abline(h=x1,col="RED")
-mtext(paste("CP:",signif(mean(abs(sC-x1)),digits = 2),
-            "P:",signif(mean(abs(kP-x1)),digits=2),
-            "PL",signif(mean(abs(kL-x1)),digits=2)),
-      line=3,side=1)
+mtext(paste(signif(mean(abs(sC-x1)),digits = 2),"    ",
+            signif(mean(abs(kP-x1)),digits=2),"    ",
+            signif(mean(abs(kL-x1)),digits=2)),
+      line=2,side=1,cex = 0.8)
 
 ## very highly correlated ###################################
 
@@ -89,18 +87,20 @@ for (i in 1:p){
   x<-z[,1]
   y<-z[,2]
   sC[i] <- cmis(x,y)
-  kP[i]<-knnmi(x,y)
+  kP[i]<-knnmi(x,y,k=sqrt(N))
   kL[i]<-cmik(x,y)
 }
 
 boxplot(sC,kP,kL,names=c("cmis", "knnmi","cmik"))
 x1<--log(1-rho^2)/2
 abline(h=x1,col="RED")
-mtext(paste("CP:",signif(mean(abs(sC-x1)),digits = 2),
-            "P:",signif(mean(abs(kP-x1)),digits=2),
-            "PL",signif(mean(abs(kL-x1)),digits=2)),
-      line=3,side=1)
+mtext(paste(signif(mean(abs(sC-x1)),digits = 2), "    ",
+            signif(mean(abs(kP-x1)),digits=2), "    ",
+            signif(mean(abs(kL-x1)),digits=2)),
+      line=2,side=1,cex = 0.8)
 
+## Exponential #######################
+par(mfrow=c(1,2))
 
 ## independent exponential ####################################
 
@@ -111,35 +111,19 @@ kL<-rep(NaN,p)
 for (i in 1:p){
   x<-rexp(N)
   y <- rexp(N)
-  #  x<-rank(x)
-  #  y<-rank(y)
-  #   x<-log(x)
-  #   y<-log(y)
-  #   x<-qnorm(ecdf(x)(x))
-  #   y<-qnorm(ecdf(y)(y))
-  #   x<-x[x!=Inf]
-  #   y<-y[y!=Inf]
-
-  #   skew.score <- function(c, x) (skewness(log(x + c)))^2
-  #   best.c <- optimise(skew.score, c(0, 20), x = x)$minimum
-  #   x <- log(x + best.c)
-  #   best.c <- optimise(skew.score, c(0, 20), x = y)$minimum
-  #   y <- log(y + best.c)
-  #
 
   sC[i] <- cmis(x,y)
-  kP[i]<-knnmi(x,y)
+  kP[i]<-knnmi(x,y,k=sqrt(N))
   kL[i]<-cmik(x,y)
 }
 
 boxplot(sC,kP,kL,names = c("cmis", "knnmi","cmik"))
 x1<-0
 abline(h=x1,col="RED")
-mtext(paste("CP:",signif(mean(abs(sC-x1)),digits = 2),
-            "P:",signif(mean(abs(kP-x1)),digits=2),
-            "PL",signif(mean(abs(kL-x1)),digits=2)),
-      line=3,side=1)
-
+mtext(paste(signif(mean(abs(sC-x1)),digits = 2), "     ",
+            signif(mean(abs(kP-x1)),digits=2),"     ",
+            signif(mean(abs(kL-x1)),digits=2)),
+      line=2,side=1)
 
 ## exponential dependent #################################
 
@@ -148,77 +132,31 @@ kP<-rep(NaN,p)
 kL<-rep(NaN,p)
 
 for (i in 1:p){
-  x<-rexp(N)
+  x <- rexp(N)
   y <- x+rexp(N)
-#  y<-x
-#  x<-rank(x)
-#  y<-rank(y)
-#   x<-log(x)
-#   y<-log(y)
-#   x<-qnorm(ecdf(x)(x))
-#   y<-qnorm(ecdf(y)(y))
-#   x<-x[x!=Inf]
-#   y<-y[y!=Inf]
-#   skew.score <- function(c, x) (skewness(log(x + c)))^2
-#   best.c <- optimise(skew.score, c(0, 20), x = x)$minimum
-#   x <- log(x + best.c)
-#   best.c <- optimise(skew.score, c(0, 20), x = y)$minimum
-#   y <- log(y + best.c)
-
-#   lambda<-BoxCox.lambda(x)
-#   x<-BoxCox(x,lambda)
-#   lambda<-BoxCox.lambda(y)
-#   y<-BoxCox(y,lambda)
 
   sC[i] <- cmis(x,y)
-  kP[i]<-knnmi(x,y)
+  kP[i]<-knnmi(x,y,k=sqrt(N))
   kL[i]<-cmik(x,y)
 }
 
 boxplot(sC,kP,kL,names = c("cmis", "knnmi","cmik"))
-x1= 1-digamma(2)
-abline(h=x1,col="RED")
-mtext(paste("CP:",signif(mean(abs(sC-x1)),digits = 2),
-            "P:",signif(mean(abs(kP-x1)),digits=2),
-            "PL",signif(mean(abs(kL-x1)),digits=2)),
-      line=3,side=1)
+x2= 1-digamma(2)
+abline(h=x2,col="RED")
+mtext(paste(signif(mean(abs(sC-x2)),digits = 2), "     ",
+            signif(mean(abs(kP-x2)),digits=2), "     ",
+            signif(mean(abs(kL-x2)),digits=2)),
+      line=2,side=1)
 
-## spotting patterns ####################################
-set.seed(17)
-par(mfrow=c(4,2))
 
-x<-state.x77[,1]
-y<-state.x77[,2]
-plot(x,y)
-barplot(c(knnmi(x,y),cmik(sqrt(x),sqrt(y)),cmi.pw(x,y)$bcmi,cor(x,y)),
-        names=c("knnmi","cmik","cmi","cor"))
+###### Time comparisons #########################
+X <- rexp(N)
+Y <- x+rexp(N)
 
-x<-USArrests[,1]
-y<-USArrests[,2]
-plot(x,y)
-barplot(c(knnmi(x,y),cmik(x,y),cmi.pw(x,y)$bcmi,cor(x,y)),
-        names=c("knnmi","cmik","cmi","cor"))
+system.time(for (i in 1:1000) cmis(X, Y))
+system.time(for (i in 1:1000) knnmi(X, Y,k=sqrt(N)))
+system.time(for (i in 1:1000) cmik(X, Y))
 
 
 
-X <-c(rnorm(50,-10,1), rnorm(50,0,1),rnorm(50,10,1))
-Y <-c(rnorm(50,0,1), rnorm(50,0,1),rnorm(50,0,1))
 
-R <- matrix(c(cos(pi/4),-sin(pi/4),sin(pi/4),cos(pi/4)),2,2)
-RR <- R%*%rbind(as.numeric(scale(X)),as.numeric(scale(Y)))
-x<-RR[1,]
-y<-RR[2,]
-plot(x,y)
-barplot(c(knnmi(x,y),cmik(x,y),cmi.pw(x,y)$bcmi,cor(x,y)),
-        names=c("knnmi","cmik","cmi","cor"))
-
-
-x <-c(rnorm(50,-10,3), rnorm(50,0,3),rnorm(50,2,3))
-y <-c(rnorm(50,-5,3), rnorm(50,5,3),rnorm(50,-5,3))
-plot(x,y)
-barplot(c(knnmi(x,y),cmik(x,y),cmi.pw(x,y)$bcmi,cor(x,y)),
-        names=c("knnmi","cmik","cmi","cor"),ylim=c(-0.5,0.7))
-
-
-
-abline(lm(y~x))

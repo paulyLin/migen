@@ -105,37 +105,24 @@ par(mfrow=c(1,3))
 
 boxplot(mip1,mip2,
         main="No Separation")
-# mtext(paste("C:", signif(end1-start1,digits = 2),
-#             "P:", signif(end2-start2,digits=2)),
-#       line=2,side=1)
 mtext(paste("s:", signif(mean(abs(mip1-x1)),digits = 2),
-            "k:", signif(mean(abs(mip2-x1)),digits=2)),
-      line=3,side=1)
+            "  k:",signif(mean(abs(mip2-x1)),digits=2)),
+      line=1,side=1)
 abline(h=x1,col="RED")
 
 boxplot(mip3,mip4,
         main="Difficult to Separate")
-# mtext(paste("C:", signif(end3-start3,digits = 2),
-#         "P:", signif(end4-start4,digits=2)),
-#         line=2,side=1)
 mtext(paste("s:", signif(mean(abs(mip3-x2)),digits = 2),
-            "k:", signif(mean(abs(mip4-x2)),digits=2)),
-      line=3,side=1)
+            "  k:", signif(mean(abs(mip4-x2)),digits=2)),
+      line=1,side=1)
 abline(h=x2,col="RED")
 
 boxplot(mip5,mip6,
         main="Easily Separated")
-# mtext(paste("C:", signif(end5-start5,digits = 2),
-#             "P:", signif(end6-start6,digits=2)),
-#       line=2,side=1)
 mtext(paste("s:", signif(mean(abs(mip5-x3)),digits = 2),
-            "k:", signif(mean(abs(mip6-x3)),digits=2)),
-      line=3,side=1)
+            "  k:", signif(mean(abs(mip6-x3)),digits=2)),
+      line=1,side=1)
 abline(h=x3,col="RED")
-
-# MSE:
-# mean((x-target)^2)
-# 
 
 
 #### Gamma ##################################
@@ -266,38 +253,31 @@ par(mfrow=c(1,3))
 
 boxplot(mip1,mip2,
         main="No Separation")
-# mtext(paste("C:", signif(end1-start1,digits = 2),
-#             "P:", signif(end2-start2,digits=2)),
-#       line=2,side=1)
 mtext(paste("s:", signif(mean(abs(mip1-x1)),digits = 2),
-            "k:", signif(mean(abs(mip2-x1)),digits=2)),
-      line=3,side=1)
+            "  k:",signif(mean(abs(mip2-x1)),digits=2)),
+      line=1,side=1)
 abline(h=x1,col="RED")
 
 boxplot(mip3,mip4,
         main="Difficult to Separate")
-# mtext(paste("C:", signif(end3-start3,digits = 2),
-#             "P:", signif(end4-start4,digits=2)),
-#       line=2,side=1)
 mtext(paste("s:", signif(mean(abs(mip3-x2)),digits = 2),
-            "k:", signif(mean(abs(mip4-x2)),digits=2)),
-      line=3,side=1)
+            "  k:", signif(mean(abs(mip4-x2)),digits=2)),
+      line=1,side=1)
 abline(h=x2,col="RED")
 
 boxplot(mip5,mip6,
         main="Easily Separated")
-# mtext(paste("C:", signif(end5-start5,digits = 2),
-#             "P:", signif(end6-start6,digits=2)),
-#       line=2,side=1)
 mtext(paste("s:", signif(mean(abs(mip5-x3)),digits = 2),
-            "k:", signif(mean(abs(mip6-x3)),digits=2)),
-      line=3,side=1)
+            "  k:", signif(mean(abs(mip6-x3)),digits=2)),
+      line=1,side=1)
 abline(h=x3,col="RED")
 
-###### Time comparisons
 
-x <- rnorm(900)
-y <- rep(LETTERS[1:3], 300)
+###### Time comparisons #########################
 
-system.time(for (i in 1:100) mmik(x, y))
-system.time(for (i in 1:100) mmis(x, y))
+X<-rgamma(sum(w),shape = shapes1[1],scale=scales1[1])
+Y<-c(rep("A",w[1]), rep("B",w[2]), rep("C",w[3]))
+
+system.time(for (i in 1:1000) mmis(X, Y))
+system.time(for (i in 1:1000) mmik(X, Y))
+
