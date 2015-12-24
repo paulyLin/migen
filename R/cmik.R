@@ -1,48 +1,41 @@
-# bandwidth version ##########
+cmik <-function(X, 
+                Y,
+                bw = c(1, 1),
+                kmax = floor(sqrt(length(X))),
+                tiebreak = TRUE,
+                scale.data = TRUE, 
+                na.rm = FALSE)
+{
+    N <- length(X)
 
-cmik <-function(X,Y,bw=c(1,1),kmax=floor(sqrt(length(X)))){
-  
-  dX <- duplicated(X)
-  dY <- duplicated(Y)
-  X[dX]<-X[dX]+rnorm(length(X[dX]),0,0.001)
-  Y[dY]<-Y[dY]+rnorm(length(Y[dY]),0,0.001)  
-   
-  X<-scale(X)
-  Y<-scale(Y)
+    if (N != length(Y))
+    {
+        stop("X and Y must have the same length")
+    }
 
-  N<-length(X)
+    if(na.rm)
+    {
+        okX <- !is.na(X)
+        okY <- !is.na(Y)
+        X <- X[okX & okY]
+        Y <- Y[okX & okY]
+    }
 
-  k<- rep(NaN,N)
-  kN <- rep(NaN,N)
-  eD <- rep(NaN,N)
-  pM <- rep(NaN,N)
-  s <- rep(NaN,N)
-  sN<-rep(NaN,N)
-  t <- rep(NaN,N)
-  tN<-rep(NaN,N)
-  l <- rep(NaN,N)
-  m <- rep(NaN,N)
-  
-  for (i in 1:N){
-    s[i]<-sum(abs(X-X[i])<bw[1])
-    s[i] <- max(s[i], 2)
-    sN[i]<-order(abs(X-X[i]))[s[i]]
-    t[i]<-sum(abs(Y-Y[i])<bw[2])
-    t[i] <- max(t[i], 2)
-    tN[i]<-order(abs(Y-Y[i]))[t[i]]
-    M <- cbind(abs(X-X[i]),abs(Y-Y[i]))
-    d <- apply(M,1,max)
-    k[i]<-min(sum(d<d[sN[i]]),sum(d<d[tN[i]]),kmax)
-#    k[i]<-max(1,k[i])
-    kN[i]<-order(d)[k[i]+1]
-    eD[i] <-sort(d)[k[i]+1]
-    pM[i] <- which.max(M[kN[i],])
-    l[i]<-sum(abs(X-X[i])<eD[i])
-    m[i]<-sum(abs(Y-Y[i])<eD[i])
-  }
-    
- MI <- digamma(N)+mean(digamma(k))-mean(digamma(l)+digamma(m))
-   
-  return(MI)
+    if (tiebreak)
+    {
+
+        dX <- duplicated(X)
+        dY <- duplicated(Y)
+        X[dX] <- X[dX] + rnorm(length(X[dX]), 0, 0.001)
+        Y[dY] <- Y[dY] + rnorm(length(Y[dY]), 0, 0.001)  
+    }
+
+    if (scale.data)
+    {
+        X <- as.vector(scale(X))
+        Y <- as.vector(scale(Y))
+    }
+
+    return(cmikCpp(bw, N, X, Y, kmax))
 }
 
